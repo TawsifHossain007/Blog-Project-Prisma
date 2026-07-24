@@ -10,6 +10,7 @@ import { authRouter } from "./modules/auth/auth.route";
 import { postRouter } from "./modules/posts/post.route";
 import { commentRouter } from "./modules/comment/comment.route";
 
+
 const app: Application = express();
 
 app.use(express.json());
