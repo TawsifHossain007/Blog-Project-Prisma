@@ -9,6 +9,7 @@ import { userRouter } from "./modules/user/user.route";
 import { authRouter } from "./modules/auth/auth.route";
 import { postRouter } from "./modules/posts/post.route";
 import { commentRouter } from "./modules/comment/comment.route";
+import { notFound } from "./middleware/notFound";
 
 
 const app: Application = express();
@@ -31,5 +32,7 @@ app.use("/api/users", userRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/posts", postRouter);
 app.use("/api/comments", commentRouter);
+
+app.use(notFound)
 
 export default app;
