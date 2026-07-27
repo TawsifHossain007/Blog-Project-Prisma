@@ -13,6 +13,8 @@ model Post {
   authorId String
   author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
 
+  isPremium Boolean @default(false)
+
   comments Comment[]
 
   @@index([authorId])

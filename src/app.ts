@@ -10,9 +10,15 @@ import { authRouter } from "./modules/auth/auth.route";
 import { postRouter } from "./modules/posts/post.route";
 import { commentRouter } from "./modules/comment/comment.route";
 import { notFound } from "./middleware/notFound";
+import { SubscriptionRouter } from "./modules/subscription/subscription.route";
+import { globalErrorHandler } from "./middleware/globalErrorHandler";
 
 
 const app: Application = express();
+
+const endpointSecret = config.stripeWebhookSecret;
+
+app.use("/api/subscription/webhook", express.raw({ type: 'application/json' }))
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -24,6 +30,7 @@ app.use(
   }),
 );
 
+
 app.get("/", (req: Request, res: Response) => {
   res.send("Hello, World!");
 });
@@ -32,7 +39,10 @@ app.use("/api/users", userRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/posts", postRouter);
 app.use("/api/comments", commentRouter);
+app.use("/api/subscription", SubscriptionRouter)
 
 app.use(notFound)
+
+app.use(globalErrorHandler)
 
 export default app;
