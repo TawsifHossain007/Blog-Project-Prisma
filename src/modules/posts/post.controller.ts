@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { catchAsync } from "../../utils/catchAsync";
 import { postService } from "./posrt.service";
 import { sendResponse } from "../../utils/sendResponse";
-import httpStatus from "http-status-codes";
+import httpStatus from "http-status";
 
 const createPost = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const id = req.user?.id;

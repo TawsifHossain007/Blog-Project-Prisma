@@ -7,16 +7,29 @@ import {
   IUpdatePostPayload,
 } from "./post.interface";
 
-const createPostInDB = async (payload: ICreatePostPayload, userId: string) => {
-  const result = await prisma.post.create({
-    data: {
-      ...payload,
-      authorId: userId,
-    },
-  });
+const createPostInDB = async (payload : ICreatePostPayload, userId : string) => {
+    const user = await prisma.user.findUniqueOrThrow({
+        where : {
+            id : userId
+        },
+        include : {
+            subscription : true
+        }
+    })
 
-  return result;
-};
+    if(payload.isPremium && user.subscription?.status !== "ACTIVE"){
+        throw new Error("You are not a premium user. So You can not create Premium content")
+    }
+
+    const result = await prisma.post.create({
+        data : {
+            ...payload,
+            authorId : userId
+        }
+    })
+
+    return result
+}
 
 const getAllPostsFromDB = async (query: IPostQuery) => {
   const limit = query.limit ? Number(query.limit) : 10;
@@ -88,7 +101,9 @@ const getAllPostsFromDB = async (query: IPostQuery) => {
     });
   }
 
-  
+  andConditions.push({
+        isPremium : false
+    })
 
   const result = await prisma.post.findMany({
     // Search And Filter Combined
@@ -210,6 +225,7 @@ const getPostByIdFromDB = async (postId: string) => {
     const post = await tx.post.findUniqueOrThrow({
       where: {
         id: postId,
+        isPremium: false
       },
 
       include: {
